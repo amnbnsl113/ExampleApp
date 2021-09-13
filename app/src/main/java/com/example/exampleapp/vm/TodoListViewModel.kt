@@ -1,29 +1,37 @@
 package com.example.exampleapp.vm
 
-import android.os.CountDownTimer
-import android.util.Log
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.exampleapp.data.RemoteRepositoryManager
+import com.example.exampleapp.model.StateModel
 import com.example.exampleapp.model.UserList
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.channels.ticker
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import retrofit2.Response
-import java.util.*
-import javax.security.auth.callback.Callback
-import kotlin.collections.ArrayList
 
 class TodoListViewModel : ViewModel() {
-    val liveData: LiveData<UserList> = liveData {
-        emitSource(networkCall())
+//    val liveData: LiveData<UserList> = liveData {
+//        emitSource(networkCall())
+//    }
+
+
+    private val _stateModelLiveData = MutableLiveData<StateModel<UserList>>();
+    val stateModelLiveData: LiveData<StateModel<UserList>> = _stateModelLiveData;
+
+    private suspend fun networkCall(): UserList? {
+        return withContext(Dispatchers.IO) {
+            RemoteRepositoryManager.userService.getUserList().execute().body()
+        }
     }
 
-    private fun networkCall(): LiveData<UserList> {
-        return liveData(Dispatchers.IO) {
-            RemoteRepositoryManager.userService.getUserList().execute().body()?.let {
-                emit(it)
-            }
+    fun refreshData() {
+        viewModelScope.launch {
+            _stateModelLiveData.value = StateModel(null, true, false, null)
+            val response = networkCall();
+            _stateModelLiveData.value =
+                StateModel(response, false, response === null, "Some problem occurred")
         }
     }
 }

@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.exampleapp.adapter.TodoListAdapter
 import com.example.exampleapp.vm.TodoListViewModel
 import com.example.exampleapp.databinding.FragmentTodoListBinding
@@ -33,12 +34,16 @@ class TodoListFragment : Fragment() {
 
         todoListAdapter = TodoListAdapter(ArrayList(), this::onItemClicked)
 
-        viewModel.liveData.observe(viewLifecycleOwner, {
-            Log.e("pass", "observed+${it}")
-            todoListAdapter.setValues(it.list);
+        viewModel.stateModelLiveData.observe(viewLifecycleOwner, {
+            if (!it.isLoading && !it.isError) {
+                binding.swiperefresh.isRefreshing = false
+                todoListAdapter.setValues(it.data?.list);
+            }
         });
 
-        viewModel.addData()
+        binding.swiperefresh.setOnRefreshListener {
+            viewModel.refreshData()
+        }
 
         binding.recyclerView.apply {
             adapter = todoListAdapter

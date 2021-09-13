@@ -36,6 +36,7 @@ class TodoListAdapter(
     }
 
     fun setValues(it: List<UserData>?) {
+        //TODO: Use DiffUtils
         if (it != null) {
             itemList = it
             notifyDataSetChanged()
