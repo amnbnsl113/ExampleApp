@@ -8,6 +8,7 @@ import com.example.exampleapp.data.RemoteRepositoryManager
 import com.example.exampleapp.model.StateModel
 import com.example.exampleapp.model.UserList
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -22,16 +23,17 @@ class TodoListViewModel : ViewModel() {
 
     private suspend fun networkCall(): UserList? {
         return withContext(Dispatchers.IO) {
+            delay(3000)
             RemoteRepositoryManager.userService.getUserList().execute().body()
         }
     }
 
     fun refreshData() {
-        viewModelScope.launch {
+        viewModelScope.launch (Dispatchers.Main){
             _stateModelLiveData.value = StateModel(null, true, false, null)
             val response = networkCall();
             _stateModelLiveData.value =
-                StateModel(response, false, response === null, "Some problem occurred")
+                StateModel(null, false, true, "Some problem occurred")
         }
     }
 }
