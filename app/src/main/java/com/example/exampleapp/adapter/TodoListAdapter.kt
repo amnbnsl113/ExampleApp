@@ -1,14 +1,19 @@
-package com.example.exampleapp
+package com.example.exampleapp.adapter
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.exampleapp.R
+import com.example.exampleapp.model.UserData
 import java.util.ArrayList
 import kotlin.reflect.KFunction1
 
-class TodoListAdapter(var itemList: List<String>, val onClickListener: KFunction1<String, Unit>) :
+class TodoListAdapter(
+    var itemList: List<UserData>,
+    val onClickListener: KFunction1<UserData, Unit>
+) :
     RecyclerView.Adapter<TodoListAdapter.MyViewHolder>() {
 
 
@@ -19,10 +24,10 @@ class TodoListAdapter(var itemList: List<String>, val onClickListener: KFunction
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        val value = itemList.get(position)
-        holder.textView.text = value;
+        val userData = itemList.get(position)
+        holder.textView.text = userData.first_name;
         holder.itemView.setOnClickListener {
-            onClickListener(value)
+            onClickListener(userData)
         }
     }
 
@@ -30,7 +35,7 @@ class TodoListAdapter(var itemList: List<String>, val onClickListener: KFunction
         return itemList.count();
     }
 
-    fun setValues(it: ArrayList<String>?) {
+    fun setValues(it: List<UserData>?) {
         if (it != null) {
             itemList = it
             notifyDataSetChanged()

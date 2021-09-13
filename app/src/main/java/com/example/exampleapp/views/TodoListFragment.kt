@@ -1,4 +1,4 @@
-package com.example.exampleapp
+package com.example.exampleapp.views
 
 import android.os.Bundle
 import android.util.Log
@@ -6,12 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.example.exampleapp.adapter.TodoListAdapter
+import com.example.exampleapp.vm.TodoListViewModel
 import com.example.exampleapp.databinding.FragmentTodoListBinding
+import com.example.exampleapp.model.UserData
 
 class TodoListFragment : Fragment() {
     private lateinit var binding: FragmentTodoListBinding
@@ -33,9 +33,9 @@ class TodoListFragment : Fragment() {
 
         todoListAdapter = TodoListAdapter(ArrayList(), this::onItemClicked)
 
-        viewModel.getList().observe(viewLifecycleOwner, {
+        viewModel.liveData.observe(viewLifecycleOwner, {
             Log.e("pass", "observed+${it}")
-            todoListAdapter.setValues(it);
+            todoListAdapter.setValues(it.list);
         });
 
         viewModel.addData()
@@ -46,7 +46,7 @@ class TodoListFragment : Fragment() {
         }
     }
 
-    fun onItemClicked(value: String) {
-        Log.e("pass", value);
+    fun onItemClicked(value: UserData) {
+        Log.e("pass", value.first_name);
     }
 }
