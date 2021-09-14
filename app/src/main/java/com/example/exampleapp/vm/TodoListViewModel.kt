@@ -1,9 +1,6 @@
 package com.example.exampleapp.vm
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.exampleapp.data.RemoteRepositoryManager
 import com.example.exampleapp.model.StateModel
 import com.example.exampleapp.model.UserList
@@ -13,9 +10,12 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class TodoListViewModel : ViewModel() {
-//    val liveData: LiveData<UserList> = liveData {
-//        emitSource(networkCall())
-//    }
+    val liveData: LiveData<String> = liveData {
+        for (i in 1..10) {
+            delay(3000)
+            emit("Index:${i}")
+        }
+    }
 
 
     private val _stateModelLiveData = MutableLiveData<StateModel<UserList>>();
@@ -29,7 +29,7 @@ class TodoListViewModel : ViewModel() {
     }
 
     fun refreshData() {
-        viewModelScope.launch (Dispatchers.Main){
+        viewModelScope.launch(Dispatchers.Main) {
             _stateModelLiveData.value = StateModel(null, true, false, null)
             val response = networkCall();
             _stateModelLiveData.value =

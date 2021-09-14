@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -32,19 +33,19 @@ class TodoListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this).get(TodoListViewModel::class.java)
+        binding.viewModel = viewModel;
+        binding.lifecycleOwner = this;
 
         todoListAdapter = TodoListAdapter(ArrayList(), this::onItemClicked)
 
         viewModel.refreshData()
         viewModel.stateModelLiveData.observe(viewLifecycleOwner, {
-            resetState()
+            binding.swiperefresh.isRefreshing = false
             if (!it.isLoading && !it.isError) {
-                binding.recyclerView.visibility = View.VISIBLE
                 todoListAdapter.setValues(it.data?.list);
             } else if (it.isLoading) {
                 binding.swiperefresh.isRefreshing = true
             } else {
-                binding.errorText.visibility = View.VISIBLE
                 binding.errorText.text = it.errorMessage
             }
         });
@@ -57,12 +58,6 @@ class TodoListFragment : Fragment() {
             adapter = todoListAdapter
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         }
-    }
-
-    private fun resetState() {
-        binding.recyclerView.visibility = View.GONE
-        binding.swiperefresh.isRefreshing = false
-        binding.errorText.visibility = View.GONE
     }
 
     fun onItemClicked(value: UserData) {
