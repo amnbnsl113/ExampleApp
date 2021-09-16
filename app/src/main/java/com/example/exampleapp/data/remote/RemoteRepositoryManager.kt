@@ -1,4 +1,4 @@
-package com.example.exampleapp.data
+package com.example.exampleapp.data.remote
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

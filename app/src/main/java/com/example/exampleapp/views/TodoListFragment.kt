@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -15,11 +16,12 @@ import com.example.exampleapp.adapter.TodoListAdapter
 import com.example.exampleapp.vm.TodoListViewModel
 import com.example.exampleapp.databinding.FragmentTodoListBinding
 import com.example.exampleapp.model.UserData
+import com.google.android.material.snackbar.Snackbar
 
 class TodoListFragment : Fragment() {
     private lateinit var binding: FragmentTodoListBinding
     private lateinit var todoListAdapter: TodoListAdapter
-    private lateinit var viewModel: TodoListViewModel
+    private val viewModel: TodoListViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,17 +34,16 @@ class TodoListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider(this).get(TodoListViewModel::class.java)
         binding.viewModel = viewModel;
         binding.lifecycleOwner = this;
 
-        todoListAdapter = TodoListAdapter(ArrayList(), this::onItemClicked)
+        todoListAdapter = TodoListAdapter(this::onItemClicked)
 
         viewModel.refreshData()
         viewModel.stateModelLiveData.observe(viewLifecycleOwner, {
             binding.swiperefresh.isRefreshing = false
             if (!it.isLoading && !it.isError) {
-                todoListAdapter.setValues(it.data?.list);
+                todoListAdapter.submitList(it.data?.list);
             } else if (it.isLoading) {
                 binding.swiperefresh.isRefreshing = true
             } else {
@@ -61,6 +62,6 @@ class TodoListFragment : Fragment() {
     }
 
     fun onItemClicked(value: UserData) {
-        Log.e("pass", value.first_name);
+        Snackbar.make(binding.root, value.first_name, Snackbar.LENGTH_LONG).show();
     }
 }

@@ -1,4 +1,4 @@
-package com.example.exampleapp.data
+package com.example.exampleapp.data.remote
 
 import com.example.exampleapp.model.UserList
 import retrofit2.Call

@@ -1,7 +1,8 @@
 package com.example.exampleapp.vm
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
-import com.example.exampleapp.data.RemoteRepositoryManager
+import com.example.exampleapp.data.remote.RemoteRepositoryManager
 import com.example.exampleapp.model.StateModel
 import com.example.exampleapp.model.UserList
 import kotlinx.coroutines.Dispatchers
@@ -9,10 +10,13 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class TodoListViewModel : ViewModel() {
+class TodoListViewModel @ViewModelInject constructor(
+
+) : ViewModel() {
     val liveData: LiveData<String> = liveData {
         for (i in 1..10) {
-            delay(3000)
+            delay(2000)
+
             emit("Index:${i}")
         }
     }
@@ -29,11 +33,11 @@ class TodoListViewModel : ViewModel() {
     }
 
     fun refreshData() {
-        viewModelScope.launch(Dispatchers.Main) {
+        viewModelScope.launch {
             _stateModelLiveData.value = StateModel(null, true, false, null)
             val response = networkCall();
             _stateModelLiveData.value =
-                StateModel(null, false, true, "Some problem occurred")
+                StateModel(response, false, false, "Some problem occurred")
         }
     }
 }
