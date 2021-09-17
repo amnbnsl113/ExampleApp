@@ -1,7 +1,6 @@
 package com.example.exampleapp.vm
 
 import androidx.lifecycle.*
-import com.example.exampleapp.data.remote.RemoteRepositoryManager
 import com.example.exampleapp.data.remote.UserService
 import com.example.exampleapp.model.StateModel
 import com.example.exampleapp.model.UserList
@@ -10,7 +9,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import retrofit2.Retrofit
 import javax.inject.Inject
 
 @HiltViewModel
@@ -20,11 +18,9 @@ class TodoListViewModel @Inject constructor(
     val liveData: LiveData<String> = liveData {
         for (i in 1..10) {
             delay(2000)
-
             emit("Index:${i}")
         }
     }
-
 
     private val _stateModelLiveData = MutableLiveData<StateModel<UserList>>();
     val stateModelLiveData: LiveData<StateModel<UserList>> = _stateModelLiveData;
@@ -38,10 +34,10 @@ class TodoListViewModel @Inject constructor(
 
     fun refreshData() {
         viewModelScope.launch {
-            _stateModelLiveData.value = StateModel(null, true, false, null)
+            _stateModelLiveData.value = StateModel(isLoading = true)
             val response = networkCall();
             _stateModelLiveData.value =
-                StateModel(response, false, false, "Some problem occurred")
+                StateModel(response)
         }
     }
 }
