@@ -21,13 +21,14 @@
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/swiperefresh"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            app:onRefreshListener="@{()->viewModel.addData()}">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:visibility="@{viewModel.stateModelLiveData.error?View.GONE:View.VISIBLE}" />
+                android:visibility="@{viewModel.todoListLiveData.error.error?View.GONE:View.VISIBLE}" />
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 
@@ -37,10 +38,20 @@
             android:layout_height="wrap_content"
             android:text="Sample Text"
             android:textColor="@color/black"
-            android:visibility="@{viewModel.stateModelLiveData.error?View.VISIBLE:View.GONE}"
+            android:visibility="@{viewModel.todoListLiveData.error.error?View.VISIBLE:View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:contentDescription="@null"
+            android:onClick="@{()->viewModel.addNewTask()}"
+            android:src="@drawable/ic_baseline_add_24"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

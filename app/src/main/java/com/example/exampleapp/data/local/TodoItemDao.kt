@@ -8,11 +8,13 @@ import com.example.exampleapp.model.TodoItem
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface TaskDao {
+interface TodoItemDao {
     @Query("SELECT * FROM todoTable")
     fun getTasks(): Flow<List<TodoItem>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addTask(todoItem: TodoItem)
 
+    @Query("DELETE FROM todoTable")
+    suspend fun flushTable()
 }

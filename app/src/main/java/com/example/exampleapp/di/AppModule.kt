@@ -1,6 +1,9 @@
 package com.example.exampleapp.di
 
 
+import android.app.Application
+import androidx.room.Room
+import com.example.exampleapp.data.local.AppDatabase
 import com.example.exampleapp.data.remote.UserService
 import dagger.Module
 import dagger.Provides
@@ -13,6 +16,17 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
+
+
+    @Provides
+    @Singleton
+    fun providesDatabase(context: Application): AppDatabase {
+        return Room.databaseBuilder(
+            context,
+            AppDatabase::class.java,
+            "app-database"
+        ).build()
+    }
 
     @Provides
     @Singleton

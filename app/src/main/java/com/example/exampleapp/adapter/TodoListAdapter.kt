@@ -8,11 +8,11 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.exampleapp.R
 import com.example.exampleapp.databinding.TodoListItemBinding
-import com.example.exampleapp.model.UserData
+import com.example.exampleapp.model.TodoItem
 
 class TodoListAdapter(
-    val onClickListener: (UserData) -> Unit
-) : ListAdapter<UserData, TodoListAdapter.MyViewHolder>(UserDataComparator) {
+    val onClickListener: (TodoItem) -> Unit
+) : ListAdapter<TodoItem, TodoListAdapter.MyViewHolder>(UserDataComparator) {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -27,23 +27,22 @@ class TodoListAdapter(
     }
 
     inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private var binding: TodoListItemBinding
+        private var binding: TodoListItemBinding = TodoListItemBinding.bind(itemView)
 
         init {
-            binding = TodoListItemBinding.bind(itemView);
             itemView.setOnClickListener { onClickListener(getItem(adapterPosition)) }
         }
 
-        fun bind(userData: UserData) {
-            binding.textView.text = "${userData.first_name} ${userData.last_name}"
+        fun bind(userData: TodoItem) {
+            binding.textView.text = userData.title
         }
     }
 
-    object UserDataComparator : DiffUtil.ItemCallback<UserData>() {
-        override fun areItemsTheSame(oldItem: UserData, newItem: UserData) =
+    object UserDataComparator : DiffUtil.ItemCallback<TodoItem>() {
+        override fun areItemsTheSame(oldItem: TodoItem, newItem: TodoItem) =
             oldItem.id == newItem.id
 
-        override fun areContentsTheSame(oldItem: UserData, newItem: UserData) = oldItem == newItem
+        override fun areContentsTheSame(oldItem: TodoItem, newItem: TodoItem) = oldItem == newItem
     }
 
 }
