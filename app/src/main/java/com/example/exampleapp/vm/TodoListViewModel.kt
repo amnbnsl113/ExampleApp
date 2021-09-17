@@ -1,17 +1,21 @@
 package com.example.exampleapp.vm
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import com.example.exampleapp.data.remote.RemoteRepositoryManager
+import com.example.exampleapp.data.remote.UserService
 import com.example.exampleapp.model.StateModel
 import com.example.exampleapp.model.UserList
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import retrofit2.Retrofit
+import javax.inject.Inject
 
-class TodoListViewModel @ViewModelInject constructor(
-
+@HiltViewModel
+class TodoListViewModel @Inject constructor(
+    val userService: UserService
 ) : ViewModel() {
     val liveData: LiveData<String> = liveData {
         for (i in 1..10) {
@@ -27,8 +31,8 @@ class TodoListViewModel @ViewModelInject constructor(
 
     private suspend fun networkCall(): UserList? {
         return withContext(Dispatchers.IO) {
-            delay(3000)
-            RemoteRepositoryManager.userService.getUserList().execute().body()
+            delay(1000)
+            userService.getUserList().execute().body()
         }
     }
 

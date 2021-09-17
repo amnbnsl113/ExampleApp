@@ -17,7 +17,9 @@ import com.example.exampleapp.vm.TodoListViewModel
 import com.example.exampleapp.databinding.FragmentTodoListBinding
 import com.example.exampleapp.model.UserData
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class TodoListFragment : Fragment() {
     private lateinit var binding: FragmentTodoListBinding
     private lateinit var todoListAdapter: TodoListAdapter
